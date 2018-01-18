@@ -1,0 +1,26 @@
+---
+- name: Add kubernetes GPG key
+  apt_key:
+    url: https://packages.cloud.google.com/apt/doc/apt-key.gpg
+    state: present
+
+- name: Add kubernetes repo to apt sources
+  apt_repository:
+    repo: deb http://apt.kubernetes.io/ kubernetes-xenial main
+    state: present
+
+- name: Install docker, kubelet, kubeadm
+  apt:
+    name: "{{ item }}"
+    state: present
+    update_cache: yes
+  with_items:
+    - docker.io
+    - kubelet
+    - kubeadm
+
+- name: Install kubectl
+  apt:
+    name: kubectl
+    state: present
+  when: k8s_master
